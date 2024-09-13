@@ -1,0 +1,17 @@
+[
+{
+  "directory": "/home/dmkim/project/chipVerifPc/build",
+  "command": "/usr/bin/g++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/home/dmkim/project/chipVerifPc/build -I/home/dmkim/project/chipVerifPc/untitled -I/home/dmkim/project/chipVerifPc/build/untitled_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -g -fPIC -std=gnu++11 -o CMakeFiles/untitled.dir/untitled_autogen/mocs_compilation.cpp.o -c /home/dmkim/project/chipVerifPc/build/untitled_autogen/mocs_compilation.cpp",
+  "file": "/home/dmkim/project/chipVerifPc/build/untitled_autogen/mocs_compilation.cpp"
+},
+{
+  "directory": "/home/dmkim/project/chipVerifPc/build",
+  "command": "/usr/bin/g++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/home/dmkim/project/chipVerifPc/build -I/home/dmkim/project/chipVerifPc/untitled -I/home/dmkim/project/chipVerifPc/build/untitled_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -g -fPIC -std=gnu++11 -o CMakeFiles/untitled.dir/main.cpp.o -c /home/dmkim/project/chipVerifPc/untitled/main.cpp",
+  "file": "/home/dmkim/project/chipVerifPc/untitled/main.cpp"
+},
+{
+  "directory": "/home/dmkim/project/chipVerifPc/build",
+  "command": "/usr/bin/g++ -DQT_CORE_LIB -DQT_GUI_LIB -DQT_WIDGETS_LIB -I/home/dmkim/project/chipVerifPc/build -I/home/dmkim/project/chipVerifPc/untitled -I/home/dmkim/project/chipVerifPc/build/untitled_autogen/include -isystem /usr/include/x86_64-linux-gnu/qt5 -isystem /usr/include/x86_64-linux-gnu/qt5/QtWidgets -isystem /usr/include/x86_64-linux-gnu/qt5/QtGui -isystem /usr/include/x86_64-linux-gnu/qt5/QtCore -isystem /usr/lib/x86_64-linux-gnu/qt5/mkspecs/linux-g++ -g -fPIC -std=gnu++11 -o CMakeFiles/untitled.dir/mainwindow.cpp.o -c /home/dmkim/project/chipVerifPc/untitled/mainwindow.cpp",
+  "file": "/home/dmkim/project/chipVerifPc/untitled/mainwindow.cpp"
+}
+]

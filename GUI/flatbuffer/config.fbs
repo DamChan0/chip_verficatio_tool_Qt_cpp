@@ -1,0 +1,16 @@
+namespace ChipVerif;
+
+table registerInfo {
+  fieldName: string;
+  address: uint64;
+  value: uint64;
+}
+
+table chipTestConfig {
+  chip_functionName: string;
+  registers: [registerInfo];
+  inputType: uint32;
+  outputType: uint32;
+}
+
+root_type chipTestConfig;
