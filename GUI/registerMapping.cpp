@@ -1,41 +1,169 @@
 #include "registerMapping.h"
+#include "mainwindow.h"
+std::unordered_map<std::string, std::vector<Register>> RegisterManager::functionRegisterMap;
+std::unordered_map<std::string, std::vector<Register>> CommonRegister::commonRegisterMap;
 
 // TODO: Add more registers
-std::unordered_map<std::string, uint64_t> fieldNameToAddress = {
-    {"PCX_REG_A_1", 0x00000001},  {"PCX_REG_A_2", 0x00000008},  {"PCX_REG_A_3", 0x00000010},
-    {"PCX_REG_A_4", 0x00000018},  {"PCX_REG_A_5", 0x00000020},  {"PCX_REG_A_6", 0x00000028},
-    {"PCX_REG_A_7", 0x00000030},  {"PCX_REG_A_8", 0x00000038},  {"PCX_REG_A_9", 0x00000040},
-    {"PCX_REG_A_10", 0x00000048}, {"PCX_REG_A_11", 0x00000050}, {"PCX_REG_A_12", 0x00000058},
-    {"PCX_REG_B_1", 0x00000028},  {"PCX_REG_B_2", 0x00000030},  {"PCX_REG_B_3", 0x00000038},
-    {"PCX_REG_B_4", 0x00000040},  {"PCX_REG_B_5", 0x00000048},  {"PCX_REG_B_6", 0x00000050},
-    {"PCX_REG_B_7", 0x00000058},  {"PCX_REG_B_8", 0x00000060},  {"PCX_REG_B_9", 0x00000068},
-    {"PCX_REG_B_10", 0x00000070}, {"PCX_REG_B_11", 0x00000078}, {"PCX_REG_B_12", 0x00000080},
-    {"PCX_REG_C_1", 0x00000050},  {"PCX_REG_C_2", 0x00000058},  {"PCX_REG_C_3", 0x00000060},
-    {"PCX_REG_C_4", 0x00000068},  {"PCX_REG_C_5", 0x00000070},  {"PCX_REG_C_6", 0x00000078},
-    {"PCX_REG_C_7", 0x00000080},  {"PCX_REG_C_8", 0x00000088},  {"PCX_REG_C_9", 0x00000090},
-    {"PCX_REG_C_10", 0x00000098}, {"PCX_REG_C_11", 0x000000A0}, {"PCX_REG_C_12", 0x000000A8},
-    {"PCX_REG_D_1", 0x00000078},  {"PCX_REG_D_2", 0x00000080},  {"PCX_REG_D_3", 0x00000088},
-    {"PCX_REG_D_4", 0x00000090},  {"PCX_REG_D_5", 0x00000098},  {"PCX_REG_D_6", 0x000000A0},
-    {"PCX_REG_D_7", 0x000000A8},  {"PCX_REG_D_8", 0x000000B0},  {"PCX_REG_D_9", 0x000000B8},
-    {"PCX_REG_D_10", 0x000000C0}, {"PCX_REG_D_11", 0x000000C8}, {"PCX_REG_D_12", 0x000000D0},
-};
 
 const std::vector<Register> &RegisterManager::getRegistersForFunction(
     const std::string &functionName)
 {
-
     return functionRegisterMap.at(functionName);
 }
 
-uint64_t getRegisterAddress(const std::string &fieldName)
+// 특정 함수에 대한 특정 레지스터의 주소를 가져오는 메서드
+uint64_t RegisterManager::getRegisterAddress(const std::string &fieldName,
+                                             const std::string &functionName)
 {
-    // List를 순회해서 해당 필드 이름을 찾아서 주소를 반환
-    for (auto &pair : fieldNameToAddress)
+    for (const auto &reg : functionRegisterMap[functionName])
     {
-        if (pair.first == fieldName)
+        if (reg.name.toStdString() == fieldName)
         {
-            return pair.second;
+            return reg.address;
         }
     }
     return 0;
+}
+
+std::vector<std::string> CommonRegister::getCategories() const
+{
+    std::vector<std::string> categories;
+    categories.reserve(commonRegisterMap.size());
+    for (const auto &pair : commonRegisterMap)
+    {
+        categories.push_back(pair.first);
+    }
+
+    return categories;
+}
+
+std::vector<Register> CommonRegister::getRegistersForCategory(const std::string &category) const
+{
+    auto it = commonRegisterMap.find(category);
+    if (it != commonRegisterMap.end())
+    {
+        return it->second;
+    }
+    return {}; // 카테고리가 존재하지 않을 경우 빈 벡터 반환
+}
+
+void CommonRegister::updateCommonRegisterValues(QTableWidget *commonRegisterTable)
+{
+    for (int row = 0; row < commonRegisterTable->rowCount(); ++row)
+    {
+        QString category = commonRegisterTable->item(row, 0)->text();
+        QString registerName = commonRegisterTable->item(row, 1)->text();
+        QLineEdit *valueEdit = qobject_cast<QLineEdit *>(commonRegisterTable->cellWidget(row, 3));
+        if (valueEdit)
+        {
+            bool ok;
+            float value = valueEdit->text().toFloat(&ok);
+            if (ok)
+            {
+                // 여기서 CommonRegister::commonRegisterMap을 직접 업데이트합니다.
+                for (auto &reg : CommonRegister::commonRegisterMap[category.toStdString()])
+                {
+                    if (reg.name == registerName)
+                    {
+                        reg.value = value;
+                        break;
+                    }
+                }
+            }
+        }
+    }
+}
+
+void MainWindow::saveFunctionConfig()
+{
+    if (currentActivatedButton && !currentActivatedButton->text().isEmpty())
+    {
+        QString functionName = currentActivatedButton->text();
+        std::cout << "Saving function: " << functionName.toStdString() << std::endl;
+
+        FunctionConfig &config = functionConfigs[functionName];
+
+        // 기능별 레지스터 저장
+        config.registers.clear();
+        for (int i = 0; i < currentFieldName.size(); i++)
+        {
+            Register reg;
+            reg.name = currentFieldName[i]->text();
+            reg.value = currentValue[i]->text().toFloat();
+            reg.fixedPoint = currentFixedPoint[i]->isChecked();
+            config.registers.push_back(reg);
+        }
+
+        // 공통 레지스터 저장
+        config.commonRegisters.clear();
+        for (const auto &categoryPair : CommonRegister::commonRegisterMap)
+        {
+            for (const auto &reg : categoryPair.second)
+            {
+                Register updatedReg = reg; // 기존 정보 복사
+
+                // UI에서 현재 값 가져오기
+                for (int row = 0; row < commonRegisterTable->rowCount(); ++row)
+                {
+                    if (commonRegisterTable->item(row, 1)->text() == reg.name)
+                    {
+                        QLineEdit *valueEdit =
+                            qobject_cast<QLineEdit *>(commonRegisterTable->cellWidget(row, 3));
+                        if (valueEdit)
+                        {
+                            updatedReg.value = valueEdit->text().toFloat();
+                        }
+                        break;
+                    }
+                }
+
+                config.commonRegisters.push_back(updatedReg);
+            }
+        }
+
+        // 기타 설정 저장
+        config.inputType = ui->spinBox_inputType->value();
+        config.outputType = ui->spinBox_outputType->value();
+        config.inputSourcePath = ui->lineEdit_inputSource->text();
+
+        std::cout << "Function config saved successfully" << std::endl;
+    }
+    else
+    {
+        std::cout << "Error: No function selected or function name is empty" << std::endl;
+    }
+}
+
+void MainWindow::updateCommonRegisterTable(const QString &functionName)
+{
+    if (functionConfigs.find(functionName) != functionConfigs.end())
+    {
+        const auto &config = functionConfigs[functionName];
+
+        for (int row = 0; row < commonRegisterTable->rowCount(); ++row)
+        {
+            QString regName = commonRegisterTable->item(row, 1)->text();
+            QLineEdit *valueEdit =
+                qobject_cast<QLineEdit *>(commonRegisterTable->cellWidget(row, 3));
+            if (valueEdit)
+            {
+                auto it =
+                    std::find_if(config.commonRegisters.begin(),
+                                 config.commonRegisters.end(),
+                                 [&regName](const Register &reg) { return reg.name == regName; });
+                if (it != config.commonRegisters.end())
+                {
+                    if (it->value == 0)
+                    {
+                        valueEdit->clear();
+                        valueEdit->setPlaceholderText("Value");
+                    }
+                    else
+                    {
+                        valueEdit->setText(QString::number(it->value));
+                    }
+                }
+            }
+        }
+    }
 }

@@ -1,4 +1,0 @@
-/home/dmkim/project/chipVerifPc/GUI/build/CMakeFiles/GUI.dir
-/home/dmkim/project/chipVerifPc/GUI/build/CMakeFiles/edit_cache.dir
-/home/dmkim/project/chipVerifPc/GUI/build/CMakeFiles/rebuild_cache.dir
-/home/dmkim/project/chipVerifPc/GUI/build/CMakeFiles/GUI_autogen.dir

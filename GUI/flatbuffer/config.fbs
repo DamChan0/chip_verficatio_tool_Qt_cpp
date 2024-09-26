@@ -1,16 +1,29 @@
 namespace ChipVerif;
 
+table commonRegisterInfo{
+  fieldName: string;
+  address: uint64;
+  value: float;
+  fixedPoint: bool;
+}
+
 table registerInfo {
   fieldName: string;
   address: uint64;
-  value: uint64;
+  value: float;
+  fixedPoint: bool;
 }
 
 table chipTestConfig {
-  chip_functionName: string;
+  chipFunctionName: string;
+  commonRegister : [commonRegisterInfo];
   registers: [registerInfo];
   inputType: uint32;
   outputType: uint32;
+  inputSources: [uint8];
+  outputSources: [uint8];
 }
 
 root_type chipTestConfig;
+
+

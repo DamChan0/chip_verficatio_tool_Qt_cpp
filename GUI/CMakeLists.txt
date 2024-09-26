@@ -21,8 +21,10 @@ set(PROJECT_SOURCES
         mainwindow.cpp
         mainwindow.h
         mainwindow.ui
+        protocol.cpp
         registerMapping.cpp  # Include the register mapping logic
         ../flatbuffers/config_generated.h
+        slot.cpp
 )
 
 if(${QT_VERSION_MAJOR} GREATER_EQUAL 6)

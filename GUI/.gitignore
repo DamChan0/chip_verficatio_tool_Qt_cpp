@@ -1,0 +1,6 @@
+build/**
+GUI/build/**/*
+*.o
+*.a
+*.so
+*.d
